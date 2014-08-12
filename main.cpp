@@ -1,3 +1,6 @@
+//
+//	SQL CONNECTOR. tumanoid@list.ru 2014
+//
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
