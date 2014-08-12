@@ -11,51 +11,54 @@
 #include <cppconn/statement.h>
 
 
-extern "C" void u_print ( const char * str )
+static sql::Driver *driver;
+static sql::Connection *con;
+static sql::Statement *stmt;
+static sql::ResultSet *res;
+
+
+extern "C" void sqlConnect ()
 {
-	printf ( "%s", str );
-}
-
-
-sql::Driver *driver;
-sql::Connection *con;
-sql::Statement *stmt;
-sql::ResultSet *res;
-
-extern "C" void start ( const char * str )
-{
-	printf ("Init begin...\n");
 	try
 	{
 		driver = get_driver_instance ();
 		con = driver->connect ("tcp://188.120.224.62:3306","root", "DrCranch79");
 		con->setSchema ( "test" );
 		stmt = con->createStatement ();
-		//res  = 
-		stmt->execute ( "INSERT INTO `ФИО` (`Фамилия`, `Имя`, `Отчество`) VALUES ('C++','C++','C++')" );
+	}
+	catch ( sql::SQLException &e )
+    {
+		printf ("SQL err\n");
+		std::cout << e.what () << " ERR_CODE: " << e.getErrorCode () << std::endl;
+    }
+}
 
-		res  = stmt->executeQuery ( "SELECT * FROM `ФИО` AS _msg" );		
+
+extern "C" void sqlQuerry ( const char* str )
+{	
+	try
+	{
+		//stmt = con->createStatement ();
+
+		stmt->execute ( str );
+		
+		res  = stmt->executeQuery ( "SELECT * FROM `ФИО`" );		
 		while ( res->next() )
 		{
-			//std::cout << res->getString ("_msg");
-			//std::cout << res->getString (1);
-			//std::cout << res->getString (2);
-			//std::cout << res->getString (3);
-			
-			//printf ("%s %s %s", res->getString (1), res->getString (2), res->getString (3));
-		//printf ( "===================================\n");
 			printf ("%s %s %s %s \n", res->getString (1).c_str (),
 								res->getString (2).c_str (),
 								res->getString (3).c_str (),
-								res->getString (4).c_str ());
+								res->getString (4).c_str ());					
 		}
-		
+		delete res;
+		delete stmt;
     }
     catch ( sql::SQLException &e )
     {
 		printf ("SQL err\n");
-		std::cout << e.what ();
+		std::cout << e.what () << " ERR_CODE: " << e.getErrorCode () << std::endl;
     }
+    
 }
 
 extern "C" void dur ()
