@@ -1,6 +1,7 @@
 //
 //	SQL CONNECTOR. tumanoid@list.ru 2014
 //
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
@@ -13,6 +14,7 @@
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
 
+#include "common.h"
 
 static sql::Driver *driver;
 static sql::Connection *con;
