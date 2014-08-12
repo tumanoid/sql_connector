@@ -62,6 +62,8 @@ extern "C" void sqlQuerry ( const char* str )
 		std::cout << e.what () << " ERR_CODE: " << e.getErrorCode () << std::endl;
     }
     
+    printf ( "---------------" );
+    
 }
 
 extern "C" void dur ()
