@@ -10,6 +10,9 @@
 
 #include "common.h"
 
+#ifndef WIN32
+#include <dlfcn.h>
+#endif
 
 static MYSQL *sock;
 static MYSQL_RES *res;
@@ -28,9 +31,9 @@ DLL_EXPORT void sqlConnect ( const char* password )
 		return;
 	}
 
-	mysql_options ( sock,MYSQL_READ_DEFAULT_GROUP,"connect" );
+	mysql_options ( sock, MYSQL_READ_DEFAULT_GROUP, "connect" );
 
-	if (!mysql_real_connect(sock, "188.120.224.62", "root", password, "test", 3306, NULL, 0 ))
+	if (!mysql_real_connect ( sock, "188.120.224.62", "root", password, "test", 3306, NULL, 0 ))
 
 	{
 		fprintf ( err_f,"Couldn't connect to engine!\n%s\n", mysql_error ( sock ));
@@ -52,13 +55,18 @@ DLL_EXPORT void sqlGetQuery ( const char* query_str, char* out_str )
 	mysql_query ( sock, query_str );
 	
 	if ( !( res = mysql_store_result ( sock )))
-    {
-      fprintf ( err_f, "Couldn't get result from %s\n", mysql_error ( sock ));
-	  return;
+	{
+		fprintf ( err_f, "Couldn't get result from %s\n", mysql_error ( sock ));
+		return;
     }
 	
 	MYSQL_ROW curr_row = mysql_fetch_row ( res );
-	sprintf ( out_str, "%s", curr_row [0] );
+	
+	int count_row   = mysql_num_rows ( res );
+	if ( count_row > 0 )
+	{
+		sprintf ( out_str, "%s", curr_row [0] );
+	}
 	
 	mysql_free_result ( res );
 
