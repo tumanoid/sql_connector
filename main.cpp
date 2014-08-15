@@ -2,17 +2,11 @@
 //	SQL CONNECTOR. tumanoid@list.ru 2014
 //
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <iostream>
 
+#include <stdio.h>
 #include "mysql.h"
 
 #include "common.h"
-
-#ifndef WIN32
-#include <dlfcn.h>
-#endif
 
 static MYSQL *sock;
 static MYSQL_RES *res;
@@ -50,6 +44,12 @@ DLL_EXPORT void sqlConnect ( const char* password )
 }
 
 
+DLL_EXPORT void sqlSetQuery ( const char* query_str )
+{	
+	mysql_query ( sock, query_str );
+}
+
+
 DLL_EXPORT void sqlGetQuery ( const char* query_str, char* out_str )
 {	
 	mysql_query ( sock, query_str );
@@ -61,12 +61,10 @@ DLL_EXPORT void sqlGetQuery ( const char* query_str, char* out_str )
     }
 	
 	MYSQL_ROW curr_row = mysql_fetch_row ( res );
-	
+
 	int count_row   = mysql_num_rows ( res );
-	if ( count_row > 0 )
-	{
-		sprintf ( out_str, "%s", curr_row [0] );
-	}
+	
+	sprintf ( out_str, "%s", curr_row [0] );
 	
 	mysql_free_result ( res );
 
