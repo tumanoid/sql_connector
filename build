@@ -1,0 +1,13 @@
+#!/bin/bash
+INC=-I../../include
+
+#gcc -c $INC -Wall -O2 grum_sql.cpp -o grum.o
+#gcc grum.o -lmysql -lstdc++ -o grum.app
+#chmod +x grum.app
+
+gcc -c -Wall -fPIC $INC main.cpp -o main.o
+gcc main.o -shared -lmysql -o libsql_connector.so
+sudo chmod +777 libsql_connector.so
+rm *.o
+sudo cp libsql_connector.so /usr/lib/libsql_connector.so
+#gcc -s -shared -Wall $INC -lmysqlcppconn main.cpp -o libshared_lib_test.so
